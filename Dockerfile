@@ -1,20 +1,20 @@
-# Pull from a base image
-FROM node:12-alpine
+# pull official base image
+FROM node:13.12.0-alpine
 
-# Copy the files from the current directory to app/
-COPY . app/
+# set working directory
+WORKDIR /app
 
-# Use app/ as the working directory
-WORKDIR app/
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
-# Install dependencies (npm ci is similar to npm i, but for automated builds)
-RUN npm ci --only-production
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
 
-# Build production client side React application
-RUN npm run build
+# add app
+COPY . ./
 
-# Listen on the specified port
-EXPOSE 3000
-
-# Set Node server
-ENTRYPOINT npm run start
+# start app
+CMD ["npm", "start"]
