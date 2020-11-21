@@ -1,8 +1,5 @@
-# React GitHub Visualiser App
-An app created as part of my third year Software Engineering module which visualises data using the Github API.
-=======
 # Github-Visualiser
-
+An app created as part of my third year Software Engineering module which visualises data using the Github API.
 ### Prerequisites
 To run this project, you will need the following installed:
 
