@@ -63,8 +63,8 @@ function App() {
       <div className="main">
         <div className="search">
           <Form onSubmit={handleSubmit}>
-            <Dropdown clearable options={options} selection />
             <Form.Group>
+              <Dropdown clearable options={options} selection />
               <Form.Input
                 placeholder="Enter Username"
                 name="name"
