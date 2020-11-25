@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { Form, Card, Image, Icon, Dropdown } from "semantic-ui-react";
+import { Form, Card, Image, Icon, Label } from "semantic-ui-react";
 
 function App() {
   const [name, setName] = useState("");
@@ -53,7 +53,12 @@ function App() {
     fetch(`https://api.github.com/users/${userInput}`)
       .then((res) => res.json())
       .then((data) => {
-        setData(data);
+        if (data.message) {
+          setError("User Not Found :(");
+        } else {
+          setData(data);
+          setError(null);
+        }
       });
   };
 
@@ -64,7 +69,6 @@ function App() {
         <div className="search">
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Dropdown clearable options={options} selection />
               <Form.Input
                 placeholder="Enter Username"
                 name="name"
@@ -74,35 +78,39 @@ function App() {
             </Form.Group>
           </Form>
         </div>
-        <div className="card">
-          <Card>
-            <Image src={avatar} wrapped ui={false} />
-            <Card.Content>
-              <Card.Header>{name}</Card.Header>
-              <Card.Meta>{username}</Card.Meta>
-              <Card.Description>{bio}</Card.Description>
-            </Card.Content>
+        {error ? (
+          <h1>{error}</h1>
+        ) : (
+          <div className="card">
+            <Card>
+              <Image src={avatar} wrapped ui={false} />
+              <Card.Content>
+                <Card.Header>{name}</Card.Header>
+                <Card.Meta>{username}</Card.Meta>
+                <Card.Description>{bio}</Card.Description>
+              </Card.Content>
 
-            <Card.Content extra>
-              <a>
-                <Icon name="user" />
-                {followers} Followers
-              </a>
-            </Card.Content>
-            <Card.Content extra>
-              <a>
-                <Icon name="user" />
-                {following} Following
-              </a>
-            </Card.Content>
-            <Card.Content extra>
-              <a>
-                <Icon name="puzzle" />
-                {repos} Repositories
-              </a>
-            </Card.Content>
-          </Card>
-        </div>
+              <Card.Content extra>
+                <a>
+                  <Icon name="user" />
+                  {followers} Followers
+                </a>
+              </Card.Content>
+              <Card.Content extra>
+                <a>
+                  <Icon name="user" />
+                  {following} Following
+                </a>
+              </Card.Content>
+              <Card.Content extra>
+                <a>
+                  <Icon name="puzzle" />
+                  {repos} Repositories
+                </a>
+              </Card.Content>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
