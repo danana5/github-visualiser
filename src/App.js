@@ -1,6 +1,19 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { Form, Card, Image, Icon, Label } from "semantic-ui-react";
+import {
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Legend,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
+import { Form, Card, Image, Icon } from "semantic-ui-react";
 
 function App() {
   const [name, setName] = useState("");
@@ -12,12 +25,8 @@ function App() {
   const [bio, setBio] = useState("");
   const [userInput, setUserInput] = useState("");
   const [error, setError] = useState(null);
-
-  const options = [
-    { key: 1, text: "Username", value: 1 },
-    { key: 2, text: "Repository", value: 2 },
-    { key: 3, text: "Organization", value: 3 },
-  ];
+  const [fullRepos, setFullRepos] = useState("");
+  const [languages, setLanguages] = useState("");
 
   useEffect(() => {
     fetch("https://api.github.com/users/example")
@@ -57,6 +66,9 @@ function App() {
           setError("User Not Found :(");
         } else {
           setData(data);
+          fetch(`${data.repos_url}`)
+            .then((res) => res.json())
+            .then((reposArr) => setFullRepos(reposArr));
           setError(null);
         }
       });
@@ -89,7 +101,6 @@ function App() {
                 <Card.Meta>{username}</Card.Meta>
                 <Card.Description>{bio}</Card.Description>
               </Card.Content>
-
               <Card.Content extra>
                 <a>
                   <Icon name="user" />
@@ -111,6 +122,15 @@ function App() {
             </Card>
           </div>
         )}
+        <div className="charts">
+          <BarChart width={1800} height={250} data={fullRepos} barGap={10}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="size" fill="#8884d8" />
+          </BarChart>
+        </div>
       </div>
     </div>
   );
