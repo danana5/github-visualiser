@@ -24,3 +24,7 @@ h1 {
   text-align: center;
   color: grey;
 }
+.charts {
+  padding: 20px;
+  display: flex;
+}
