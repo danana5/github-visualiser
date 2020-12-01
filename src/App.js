@@ -12,6 +12,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  Treemap,
 } from "recharts";
 import { Form, Card, Image, Icon } from "semantic-ui-react";
 
@@ -26,7 +27,8 @@ function App() {
   const [userInput, setUserInput] = useState("");
   const [error, setError] = useState(null);
   const [fullRepos, setFullRepos] = useState("");
-  const [languages, setLanguages] = useState("");
+
+  let languages = new Map();
 
   useEffect(() => {
     fetch("https://api.github.com/users/example")
@@ -68,7 +70,26 @@ function App() {
           setData(data);
           fetch(`${data.repos_url}`)
             .then((res) => res.json())
-            .then((reposArr) => setFullRepos(reposArr));
+            .then((reposArr) => {
+              setFullRepos(reposArr);
+              for (let i = 0; i < reposArr.length; i++) {
+                let url = reposArr[i].languages_url;
+                fetch(`${url}`).then((langs) => {
+                  if (langs != null) {
+                    for (const [key, value] in langs) {
+                      console.log(langs);
+                      if (languages.has(key)) {
+                        let val = value;
+                        languages.set(key, value + val);
+                      } else {
+                        languages.set(key, value);
+                      }
+                    }
+                  }
+                });
+              }
+            });
+
           setError(null);
         }
       });
@@ -123,13 +144,24 @@ function App() {
           </div>
         )}
         <div className="charts">
-          <BarChart width={1800} height={250} data={fullRepos} barGap={10}>
+          <BarChart width={800} height={250} data={fullRepos}>
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
             <Legend />
             <Bar dataKey="size" fill="#8884d8" />
           </BarChart>
+        </div>
+        <div className="treemap">
+          <Treemap
+            width={730}
+            height={250}
+            data={languages}
+            dataKey={languages.value}
+            ratio={4 / 3}
+            stroke="#fff"
+            fill="#8884d8"
+          />
         </div>
       </div>
     </div>
