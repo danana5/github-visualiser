@@ -27,9 +27,9 @@ function App() {
   const [userInput, setUserInput] = useState("");
   const [error, setError] = useState(null);
   const [fullRepos, setFullRepos] = useState("");
+  const [langArray, setLanguages] = useState("");
 
   let languages = new Map();
-  let langArray = [];
 
   useEffect(() => {
     fetch("https://api.github.com/users/example")
@@ -38,14 +38,14 @@ function App() {
         setData(data);
       });
   }, []);
-const headers = {
-  "Authorization": "Token " + "tokenGoesHere"
-}
-const options = {
-  "method": "GET",
-  "headers": headers
-} 
-const setData = ({
+  const headers = {
+    Authorization: "Token " + "tokenGoesHere",
+  };
+  const options = {
+    method: "GET",
+    headers: headers,
+  };
+  const setData = ({
     name,
     login,
     bio,
@@ -68,7 +68,7 @@ const setData = ({
   };
 
   const handleSubmit = () => {
-    fetch(`https://api.github.com/users/${userInput}`,{options})
+    fetch(`https://api.github.com/users/${userInput}`, { options })
       .then((res) => res.json())
       .then((data) => {
         if (data.message) {
@@ -79,22 +79,31 @@ const setData = ({
             .then((res) => res.json())
             .then((reposArr) => {
               setFullRepos(reposArr);
-              console.log(reposArr);
-              console.log(typeof reposArr)
-              for(let i = 0; i < reposArr.length;i++){
-                console.log(languages);
-                if(reposArr[i].language != null){
-                  if(languages.has(reposArr[i].languages)){
-                    let temp = languages.get(reposArr[i].language) + reposArr[i].size;
-                    languages.delete(reposArr[i].language);
-                    languages.set(reposArr[i].language, temp);
-                  }
-                  else{
-                    languages.set(reposArr[i].language, reposArr[i].size);
-                  }
-                }
+              for (let i = 0; i < reposArr.length; i++) {
+                console.log(reposArr[i].languages_url);
+                fetch(`${reposArr[i].languages_url}`)
+                  .then((res) => res.json())
+                  .then((lang) => {
+                    if (lang != null) {
+                      for (const [key, value] of Object.entries(lang)) {
+                        console.log(languages);
+                        if (languages.has(key)) {
+                          let num = languages.get(key);
+                          languages.set(key, value + num);
+                        } else {
+                          languages.set(key, value);
+                        }
+                      }
+                      setLanguages(
+                        Array.from(languages, ([name, size]) => ({
+                          name,
+                          size,
+                        }))
+                      );
+                      console.log(langArray);
+                    }
+                  });
               }
-              langArray = Array.from(languages, ([language, size]) => ({ language, size }));
               console.log(langArray);
             });
 
@@ -161,15 +170,16 @@ const setData = ({
               <Bar dataKey="size" fill="#8884d8" />
             </BarChart>
           </div>
-          <div className="radarChart">
-          <RadarChart outerRadius={90} width={730} height={250} data={}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey="language"/>
-            <PolarRadiusAxis angle={30} domain={[0, 150]} />
-            <Radar name="Size" dataKey="size" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-            <Legend />
-          </RadarChart>
-
+          <div className="treeChart">
+            <Treemap
+              width={730}
+              height={250}
+              data={langArray}
+              dataKey="size"
+              ratio={4 / 3}
+              stroke="#fff"
+              fill="#8884d8"
+            />
           </div>
         </div>
       </div>
