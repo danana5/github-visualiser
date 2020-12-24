@@ -26,5 +26,12 @@ h1 {
 }
 .charts {
   padding: 20px;
+  justify-content: center;
   display: flex;
+}
+.barChart {
+  padding: 30px;
+}
+.treeChart {
+  padding: 30px;
 }
