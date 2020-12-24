@@ -39,7 +39,7 @@ function App() {
       });
   }, []);
   const headers = {
-    Authorization: "Token " + "tokenGoesHere",
+    Authorization: "Token " + "TOKENgoesHERE",
   };
   const options = {
     method: "GET",
@@ -75,41 +75,42 @@ function App() {
           setError("User Not Found :(");
         } else {
           setData(data);
-          fetch(`${data.repos_url}`)
+          fetch(`${data.repos_url}`, { options })
             .then((res) => res.json())
             .then((reposArr) => {
               setFullRepos(reposArr);
-              for (let i = 0; i < reposArr.length; i++) {
-                console.log(reposArr[i].languages_url);
-                fetch(`${reposArr[i].languages_url}`)
-                  .then((res) => res.json())
-                  .then((lang) => {
-                    if (lang != null) {
-                      for (const [key, value] of Object.entries(lang)) {
-                        console.log(languages);
-                        if (languages.has(key)) {
-                          let num = languages.get(key);
-                          languages.set(key, value + num);
-                        } else {
-                          languages.set(key, value);
-                        }
-                      }
-                      setLanguages(
-                        Array.from(languages, ([name, size]) => ({
-                          name,
-                          size,
-                        }))
-                      );
-                      console.log(langArray);
-                    }
-                  });
-              }
-              console.log(langArray);
+              getLanguages(reposArr);
             });
-
           setError(null);
         }
       });
+  };
+
+  //function which will find the languages and total of bites for that languages
+  const getLanguages = (reposArr) => {
+    for (let i = 0; i < reposArr.length; i++) {
+      console.log(reposArr[i].languages_url);
+      fetch(`${reposArr[i].languages_url}`, { options })
+        .then((res) => res.json())
+        .then((lang) => {
+          if (lang != null) {
+            for (const [key, value] of Object.entries(lang)) {
+              if (languages.has(key)) {
+                let num = languages.get(key);
+                languages.set(key, value + num);
+              } else {
+                languages.set(key, value);
+              }
+            }
+            setLanguages(
+              Array.from(languages, ([name, size]) => ({
+                name,
+                size,
+              }))
+            );
+          }
+        });
+    }
   };
 
   return (
