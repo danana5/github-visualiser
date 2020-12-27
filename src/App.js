@@ -28,6 +28,7 @@ function App() {
   const [error, setError] = useState(null);
   const [fullRepos, setFullRepos] = useState("");
   const [langArray, setLanguages] = useState("");
+  const [popLang, setPopLang] = useState("");
 
   let languages = new Map();
 
@@ -39,7 +40,7 @@ function App() {
       });
   }, []);
   const headers = {
-    Authorization: "Token " + "TOKENgoesHERE",
+    Authorization: "Token " + "d4e8a6376ce6a28a6a189178187301201fccade3",
   };
   const options = {
     method: "GET",
@@ -89,7 +90,6 @@ function App() {
   //function which will find the languages and total of bites for that languages
   const getLanguages = (reposArr) => {
     for (let i = 0; i < reposArr.length; i++) {
-      console.log(reposArr[i].languages_url);
       fetch(`${reposArr[i].languages_url}`, { options })
         .then((res) => res.json())
         .then((lang) => {
@@ -111,6 +111,19 @@ function App() {
           }
         });
     }
+    mostUsedLanguage(langArray);
+  };
+
+  const mostUsedLanguage = (langArr) => {
+    let temp = 0;
+    let popLang = "";
+    for (let i = 0; i < langArr.length; i++) {
+      if (temp < langArr[i].size) {
+        temp = langArr[i].size;
+        popLang = langArr[i].name;
+      }
+    }
+    setPopLang(popLang);
   };
 
   return (
@@ -158,6 +171,12 @@ function App() {
                   {repos} Repositories
                 </a>
               </Card.Content>
+              <Card.Content extra>
+                <a>
+                  <Icon name="sort alphabet up" />
+                  {popLang} Developer
+                </a>
+              </Card.Content>
             </Card>
           </div>
         )}
@@ -179,7 +198,7 @@ function App() {
               dataKey="size"
               ratio={4 / 3}
               stroke="#fff"
-              fill="#8884d8"
+              fill="green"
             />
           </div>
         </div>
