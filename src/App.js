@@ -74,6 +74,7 @@ function App() {
       .then((data) => {
         if (data.message) {
           setError("User Not Found :(");
+          errorSearch();
         } else {
           setData(data);
           fetch(`${data.repos_url}`, { options })
@@ -85,6 +86,11 @@ function App() {
           setError(null);
         }
       });
+  };
+
+  const errorSearch = () => {
+    setLanguages([]);
+    setFullRepos([]);
   };
 
   //function which will find the languages and total of bites for that languages
