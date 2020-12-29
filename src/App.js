@@ -31,20 +31,17 @@ function App() {
   const [popLang, setPopLang] = useState("");
 
   let languages = new Map();
+  let commits = new Map();
 
   useEffect(() => {
-    fetch("https://api.github.com/users/example")
+    fetch("https://api.github.com/users/example", { headers })
       .then((res) => res.json())
       .then((data) => {
         setData(data);
       });
   }, []);
   const headers = {
-    Authorization: "Token " + "d4e8a6376ce6a28a6a189178187301201fccade3",
-  };
-  const options = {
-    method: "GET",
-    headers: headers,
+    Authorization: `Basic tokenGOEsHERe`,
   };
   const setData = ({
     name,
@@ -69,7 +66,9 @@ function App() {
   };
 
   const handleSubmit = () => {
-    fetch(`https://api.github.com/users/${userInput}`, { options })
+    fetch(`https://api.github.com/users/${userInput}`, {
+      headers,
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.message) {
@@ -77,10 +76,10 @@ function App() {
           errorSearch();
         } else {
           setData(data);
-          fetch(`${data.repos_url}`, { options })
+          fetch(`${data.repos_url}`, { headers })
             .then((res) => res.json())
             .then((reposArr) => {
-              setFullRepos(reposArr);
+              getCommits(reposArr);
               getLanguages(reposArr);
             });
           setError(null);
@@ -93,10 +92,33 @@ function App() {
     setFullRepos([]);
   };
 
+  const getCommits = (reposArr) => {
+    for (let i = 0; i < reposArr.length; i++) {
+      fetch(
+        `https://api.github.com/repos/${reposArr[i].full_name}/commits?per_page=100`,
+        {
+          headers,
+        }
+      )
+        .then((res) => res.json())
+        .then((commArr) => {
+          console.log(reposArr[i].full_name);
+          commits.set(reposArr[i].name, commArr.length);
+          setFullRepos(
+            Array.from(commits, ([name, commits]) => ({
+              name,
+              commits,
+            }))
+          );
+        });
+    }
+    console.log(fullRepos);
+  };
+
   //function which will find the languages and total of bites for that languages
   const getLanguages = (reposArr) => {
     for (let i = 0; i < reposArr.length; i++) {
-      fetch(`${reposArr[i].languages_url}`, { options })
+      fetch(`${reposArr[i].languages_url}`, { headers })
         .then((res) => res.json())
         .then((lang) => {
           if (lang != null) {
@@ -134,7 +156,6 @@ function App() {
 
   return (
     <div>
-      <div className="navbar">GitHub Visualiser</div>
       <div className="main">
         <div className="search">
           <Form onSubmit={handleSubmit}>
@@ -151,63 +172,65 @@ function App() {
         {error ? (
           <h1>{error}</h1>
         ) : (
-          <div className="card">
-            <Card>
-              <Image src={avatar} wrapped ui={false} />
-              <Card.Content>
-                <Card.Header>{name}</Card.Header>
-                <Card.Meta>{username}</Card.Meta>
-                <Card.Description>{bio}</Card.Description>
-              </Card.Content>
-              <Card.Content extra>
-                <a>
-                  <Icon name="user" />
-                  {followers} Followers
-                </a>
-              </Card.Content>
-              <Card.Content extra>
-                <a>
-                  <Icon name="user" />
-                  {following} Following
-                </a>
-              </Card.Content>
-              <Card.Content extra>
-                <a>
-                  <Icon name="puzzle" />
-                  {repos} Repositories
-                </a>
-              </Card.Content>
-              <Card.Content extra>
-                <a>
-                  <Icon name="sort alphabet up" />
-                  {popLang} Developer
-                </a>
-              </Card.Content>
-            </Card>
+          <div className="profile">
+            <div className="card">
+              <Card>
+                <Image src={avatar} wrapped ui={false} />
+                <Card.Content>
+                  <Card.Header>{name}</Card.Header>
+                  <Card.Meta>{username}</Card.Meta>
+                  <Card.Description>{bio}</Card.Description>
+                </Card.Content>
+                <Card.Content extra>
+                  <a>
+                    <Icon name="user" />
+                    {followers} Followers
+                  </a>
+                </Card.Content>
+                <Card.Content extra>
+                  <a>
+                    <Icon name="user" />
+                    {following} Following
+                  </a>
+                </Card.Content>
+                <Card.Content extra>
+                  <a>
+                    <Icon name="puzzle" />
+                    {repos} Repositories
+                  </a>
+                </Card.Content>
+                <Card.Content extra>
+                  <a>
+                    <Icon name="sort alphabet up" />
+                    {popLang} Developer
+                  </a>
+                </Card.Content>
+              </Card>
+            </div>
+            <div className="charts">
+              <div className="barChart">
+                <BarChart width={800} height={250} data={fullRepos}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="commits" fill="#8884d8" />
+                </BarChart>
+              </div>
+              <div className="treeChart">
+                <Treemap
+                  width={730}
+                  height={250}
+                  data={langArray}
+                  dataKey="size"
+                  ratio={4 / 3}
+                  stroke="#fff"
+                  fill="green"
+                />
+              </div>
+            </div>
           </div>
         )}
-        <div className="charts">
-          <div className="barChart">
-            <BarChart width={800} height={250} data={fullRepos}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="size" fill="#8884d8" />
-            </BarChart>
-          </div>
-          <div className="treeChart">
-            <Treemap
-              width={730}
-              height={250}
-              data={langArray}
-              dataKey="size"
-              ratio={4 / 3}
-              stroke="#fff"
-              fill="green"
-            />
-          </div>
-        </div>
       </div>
     </div>
   );
