@@ -1,11 +1,8 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import {
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
+  PieChart,
+  Pie,
   Legend,
   BarChart,
   Bar,
@@ -29,6 +26,7 @@ function App() {
   const [fullRepos, setFullRepos] = useState("");
   const [langArray, setLanguages] = useState("");
   const [popLang, setPopLang] = useState("");
+  const [statURL, setStats] = useState("");
 
   let languages = new Map();
   let commits = new Map();
@@ -41,7 +39,7 @@ function App() {
       });
   }, []);
   const headers = {
-    Authorization: `Basic tokenGOEsHERe`,
+    Authorization: `Bearer tokengoeshere`,
   };
   const setData = ({
     name,
@@ -79,8 +77,10 @@ function App() {
           fetch(`${data.repos_url}`, { headers })
             .then((res) => res.json())
             .then((reposArr) => {
+              getStats(userInput);
               getCommits(reposArr);
               getLanguages(reposArr);
+              mostUsedLanguage(langArray);
             });
           setError(null);
         }
@@ -92,6 +92,13 @@ function App() {
     setFullRepos([]);
   };
 
+  const getStats = (input) => {
+    setStats(
+      "https://github-readme-stats.vercel.app/api?username=" +
+        userInput +
+        "&theme=radical"
+    );
+  };
   const getCommits = (reposArr) => {
     for (let i = 0; i < reposArr.length; i++) {
       fetch(
@@ -139,7 +146,6 @@ function App() {
           }
         });
     }
-    mostUsedLanguage(langArray);
   };
 
   const mostUsedLanguage = (langArr) => {
@@ -165,7 +171,7 @@ function App() {
                 name="name"
                 onChange={handleSearch}
               />
-              <Form.Button content="Go!" />
+              <Form.Button content="Go!" color="#e13d81" />
             </Form.Group>
           </Form>
         </div>
@@ -207,14 +213,16 @@ function App() {
                 </Card.Content>
               </Card>
             </div>
+            <div className="stats">
+              <img src={statURL} />
+            </div>
             <div className="charts">
               <div className="barChart">
                 <BarChart width={800} height={250} data={fullRepos}>
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
-                  <Legend />
-                  <Bar dataKey="commits" fill="#8884d8" />
+                  <Bar dataKey="commits" fill="#e13d81" />
                 </BarChart>
               </div>
               <div className="treeChart">
@@ -225,7 +233,7 @@ function App() {
                   dataKey="size"
                   ratio={4 / 3}
                   stroke="#fff"
-                  fill="green"
+                  fill="#e13d81"
                 />
               </div>
             </div>
