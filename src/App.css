@@ -10,6 +10,7 @@
 .card {
   padding: 10px 0;
   display: flex;
+  background-color: #141321;
   text-decoration-color: #e13d81;
   font-family: Inconsolata;
   justify-content: center;
@@ -17,9 +18,14 @@
 h1 {
   font-family: Inconsolata;
   text-align: center;
-  color: grey;
+  color: #e13d81;
 }
 .charts {
+  padding: 20px;
+  justify-content: center;
+  display: flex;
+}
+.charts2 {
   padding: 20px;
   justify-content: center;
   display: flex;

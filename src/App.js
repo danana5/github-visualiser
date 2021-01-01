@@ -1,20 +1,22 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import {
-  PieChart,
-  Pie,
+  ScatterChart,
+  Scatter,
+  CartesianGrid,
   Legend,
   BarChart,
   Bar,
   XAxis,
   YAxis,
+  ZAxis,
   Tooltip,
   Treemap,
 } from "recharts";
 import { Form, Card, Image, Icon } from "semantic-ui-react";
 
 function App() {
-  const [name, setName] = useState("");
+  const [fullName, setName] = useState("");
   const [username, setUsername] = useState("");
   const [followers, setFollowers] = useState("");
   const [following, setFollowing] = useState("");
@@ -27,9 +29,11 @@ function App() {
   const [langArray, setLanguages] = useState("");
   const [popLang, setPopLang] = useState("");
   const [statURL, setStats] = useState("");
+  const [userCommits, setUserCommits] = useState("");
 
   let languages = new Map();
   let commits = new Map();
+  let totalCommits = [];
 
   useEffect(() => {
     fetch("https://api.github.com/users/example", { headers })
@@ -39,7 +43,7 @@ function App() {
       });
   }, []);
   const headers = {
-    Authorization: `Bearer tokengoeshere`,
+    Authorization: `Bearer token`,
   };
   const setData = ({
     name,
@@ -78,7 +82,7 @@ function App() {
             .then((res) => res.json())
             .then((reposArr) => {
               getStats(userInput);
-              getCommits(reposArr);
+              getCommits(reposArr, data.name);
               getLanguages(reposArr);
               mostUsedLanguage(langArray);
             });
@@ -99,7 +103,7 @@ function App() {
         "&theme=radical"
     );
   };
-  const getCommits = (reposArr) => {
+  const getCommits = (reposArr, userName) => {
     for (let i = 0; i < reposArr.length; i++) {
       fetch(
         `https://api.github.com/repos/${reposArr[i].full_name}/commits?per_page=100`,
@@ -109,7 +113,6 @@ function App() {
       )
         .then((res) => res.json())
         .then((commArr) => {
-          console.log(reposArr[i].full_name);
           commits.set(reposArr[i].name, commArr.length);
           setFullRepos(
             Array.from(commits, ([name, commits]) => ({
@@ -117,9 +120,70 @@ function App() {
               commits,
             }))
           );
+          let z = null;
+          let y = null;
+          let amount = 1;
+          for (const x of commArr) {
+            if (
+              x.commit.committer.name == userName ||
+              x.commit.committer.name == "GitHub"
+            ) {
+              let date = x.commit.committer.date.split("");
+              let monthNum = date[5] + date[6];
+              let hour = date[11] + date[12];
+              let month = "";
+              switch (monthNum) {
+                case "01":
+                  month = "January";
+                  break;
+                case "02":
+                  month = "February";
+                  break;
+                case "03":
+                  month = "March";
+                  break;
+                case "04":
+                  month = "April";
+                  break;
+                case "05":
+                  month = "May";
+                  break;
+                case "06":
+                  month = "June";
+                  break;
+                case "07":
+                  month = "July";
+                  break;
+                case "08":
+                  month = "August";
+                  break;
+                case "09":
+                  month = "September";
+                  break;
+                case "10":
+                  month = "October";
+                  break;
+                case "11":
+                  month = "November";
+                  break;
+                case "12":
+                  month = "December";
+                  break;
+              }
+              if (month == z && hour == y) {
+                amount++;
+              } else {
+                totalCommits.push({ Month: month, Hour: hour, Amount: amount });
+                amount = 1;
+              }
+              z = month;
+              y = hour;
+            }
+          }
         });
     }
-    console.log(fullRepos);
+    console.log(totalCommits);
+    setUserCommits(totalCommits);
   };
 
   //function which will find the languages and total of bites for that languages
@@ -183,7 +247,7 @@ function App() {
               <Card>
                 <Image src={avatar} wrapped ui={false} />
                 <Card.Content>
-                  <Card.Header>{name}</Card.Header>
+                  <Card.Header>{fullName}</Card.Header>
                   <Card.Meta>{username}</Card.Meta>
                   <Card.Description>{bio}</Card.Description>
                 </Card.Content>
@@ -236,6 +300,21 @@ function App() {
                   fill="#e13d81"
                 />
               </div>
+            </div>
+            <div className="charts2">
+              <ScatterChart
+                width={730}
+                height={250}
+                margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="Month" name="Month" />
+                <YAxis dataKey="Hour" name="Hour" />
+                <ZAxis dataKey="Amount" range={[64, 144]} name="Amount" />
+                <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+                <Legend />
+                <Scatter name="Commits" data={userCommits} fill="#e13d81" />
+              </ScatterChart>
             </div>
           </div>
         )}
