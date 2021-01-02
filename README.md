@@ -37,7 +37,7 @@ If the user enters a username that can not be linked to a GitHub account the pro
 
 ### User Card and Basic Stats
 
-![User Card](images/usercard.JPG)
+![User Card](images/UserStats.JPG)
 
 A card like this is displayed once the search for a user has finished and it displays the users; avatar, name, username, bio, amount of repositories and the amount of followers/following.
 
@@ -47,11 +47,11 @@ A small card showing the users basic stats and rating from A+ to S+.
 
 ### Graphs
 
-![User Data Graphs](images/UsersGraph1.JPG)
+![User Data Graphs](images/UsersGraphs1.JPG)
 
 This is the visualisation of the users commits to repositories on the bar graph on the left and then the languages these commits are made of on the tree map on the right.
 
-![Bar Chart Mouse Hover](images/reposgraphs.gif)
+![Bar Chart Mouse Hover](images/repographs.gif)
 
 The bar chart with the repos is interactive and upon mouse hover shows the data being visualised.
 
