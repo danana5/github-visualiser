@@ -14,11 +14,17 @@ h2 {
   font-size: 400%;
   color: #e13d81;
 }
+.calculate {
+  padding: 5px 0;
+  display: flex;
+  justify-content: center;
+}
 p {
   font-family: Inconsolata;
   text-align: center;
   font-size: medium;
   color: #e13d81;
+  font-weight: bold;
 }
 .main {
   background-color: #141321;
@@ -35,6 +41,12 @@ h1 {
   font-family: Inconsolata;
   text-align: center;
   color: #e13d81;
+}
+h3 {
+  font-family: Inconsolata;
+  text-align: left;
+  padding-left: 0px;
+  color: #a4fff9;
 }
 .charts {
   padding: 20px;
