@@ -27,3 +27,7 @@ The project was written in React.js and is fully dockerized. To run the project 
 
 ### Search Bar
 ![Search Bar](images/searchbar.gif)
+The search bar appears at the top of the screen and allows the user to input a GitHub username into the search bar and submit their query.
+
+If the user enters a username that can not be linked to a GitHub account the program alerts the user.
+![Search for a not real user](images/notauser.gif)
