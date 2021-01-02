@@ -20,3 +20,10 @@ This project was created as part of an assignment in the CSU33012 Software Engin
 1. Basic User Data i.e Name, Followers, Following etc.
 2. Intermediate User Data i.e graphing their most contributed to repositories.
 3. Analytics based on the User Data i.e determining their most active month and hour on github.
+
+The project was written in React.js and is fully dockerized. To run the project follow the instructions above.
+
+## Breakdown
+
+### Search Bar
+![Search Bar](imgages/searchbar.gif)
