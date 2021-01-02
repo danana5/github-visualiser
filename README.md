@@ -26,4 +26,4 @@ The project was written in React.js and is fully dockerized. To run the project 
 ## Breakdown
 
 ### Search Bar
-![Search Bar](imgages/searchbar.gif)
+![Search Bar](images/searchbar.gif)
