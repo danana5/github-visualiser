@@ -46,7 +46,7 @@ function App() {
       });
   }, []);
   const headers = {
-    Authorization: `Bearer d04b5912fc733823f0b330f12689f3b29dadef5c`,
+    Authorization: `Bearer token`,
   };
   const setData = ({
     name,
