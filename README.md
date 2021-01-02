@@ -47,7 +47,7 @@ A small card showing the users basic stats and rating from A+ to S+.
 
 ### Graphs
 
-![User Data Graphs](images/UsersGraphs1.JPG)
+![User Data Graphs](images/UserGraphs1.JPG)
 
 This is the visualisation of the users commits to repositories on the bar graph on the left and then the languages these commits are made of on the tree map on the right.
 
