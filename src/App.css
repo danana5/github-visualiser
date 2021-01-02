@@ -9,7 +9,7 @@
   padding-bottom: 30px;
 }
 h2 {
-  font-family: Inconsolata;
+  font-family: Open Sans;
   text-align: center;
   font-size: 400%;
   color: #e13d81;
@@ -20,7 +20,7 @@ h2 {
   justify-content: center;
 }
 p {
-  font-family: Inconsolata;
+  font-family: Open Sans;
   text-align: center;
   font-size: medium;
   color: #e13d81;
@@ -34,16 +34,16 @@ p {
   display: flex;
   background-color: #141321;
   text-decoration-color: #e13d81;
-  font-family: Inconsolata;
+  font-family: Open Sans;
   justify-content: center;
 }
 h1 {
-  font-family: Inconsolata;
+  font-family: Open Sans;
   text-align: center;
   color: #e13d81;
 }
 h3 {
-  font-family: Inconsolata;
+  font-family: Open Sans;
   text-align: left;
   padding-left: 0px;
   color: #a4fff9;
