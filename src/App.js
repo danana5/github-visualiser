@@ -30,9 +30,12 @@ function App() {
   const [popLang, setPopLang] = useState("");
   const [statURL, setStats] = useState("");
   const [userCommits, setUserCommits] = useState("");
+  const [finalCommits, setFinalCommits] = useState("");
 
   let languages = new Map();
   let commits = new Map();
+  let map = new Map();
+  let commArr = [];
   let totalCommits = [];
 
   useEffect(() => {
@@ -120,9 +123,6 @@ function App() {
               commits,
             }))
           );
-          let z = null;
-          let y = null;
-          let amount = 1;
           for (const x of commArr) {
             if (
               x.commit.committer.name == userName ||
@@ -170,20 +170,35 @@ function App() {
                   month = "December";
                   break;
               }
-              if (month == z && hour == y) {
-                amount++;
-              } else {
-                totalCommits.push({ Month: month, Hour: hour, Amount: amount });
-                amount = 1;
-              }
-              z = month;
-              y = hour;
+              totalCommits.push(month + " " + hour);
             }
           }
         });
     }
-    console.log(totalCommits);
     setUserCommits(totalCommits);
+    finCommits(userCommits);
+  };
+
+  const finCommits = (users) => {
+    for (let i = 0; i < users.length; i++) {
+      let key = users[i];
+      if (map.has(key)) {
+        let temp = map.get(key);
+        map.set(key, temp + 1);
+      } else {
+        map.set(key, 1);
+      }
+    }
+    console.log(map);
+    for (const [key, value] of map) {
+      let splitted = key.split(" ");
+      commArr.push({
+        Month: splitted[0],
+        Hour: parseInt(splitted[1]),
+        Amount: value,
+      });
+    }
+    setFinalCommits(commArr);
   };
 
   //function which will find the languages and total of bites for that languages
@@ -303,17 +318,16 @@ function App() {
             </div>
             <div className="charts2">
               <ScatterChart
-                width={730}
-                height={250}
+                width={790}
+                height={400}
                 margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="Month" name="Month" />
-                <YAxis dataKey="Hour" name="Hour" />
+                <YAxis dataKey="Hour" name="Hour" unit=":00" />
                 <ZAxis dataKey="Amount" range={[64, 144]} name="Amount" />
-                <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-                <Legend />
-                <Scatter name="Commits" data={userCommits} fill="#e13d81" />
+                <Tooltip cursor={{ strokeDasharray: "3 " }} />
+                <Scatter name="Commits" data={finalCommits} fill="#e13d81" />
               </ScatterChart>
             </div>
           </div>
