@@ -4,6 +4,22 @@
   text-decoration-color: #e13d81;
   justify-content: center;
 }
+.headerBar {
+  background-color: #141321;
+  padding-bottom: 30px;
+}
+h2 {
+  font-family: Inconsolata;
+  text-align: center;
+  font-size: 400%;
+  color: #e13d81;
+}
+p {
+  font-family: Inconsolata;
+  text-align: center;
+  font-size: medium;
+  color: #e13d81;
+}
 .main {
   background-color: #141321;
 }

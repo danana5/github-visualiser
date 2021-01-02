@@ -46,7 +46,7 @@ function App() {
       });
   }, []);
   const headers = {
-    Authorization: `Bearer token`,
+    Authorization: `Bearer d04b5912fc733823f0b330f12689f3b29dadef5c`,
   };
   const setData = ({
     name,
@@ -106,6 +106,7 @@ function App() {
         "&theme=radical"
     );
   };
+
   const getCommits = (reposArr, userName) => {
     for (let i = 0; i < reposArr.length; i++) {
       fetch(
@@ -241,6 +242,10 @@ function App() {
 
   return (
     <div>
+      <div className="headerBar">
+        <h2>GitHub Visualiser</h2>
+        <p>By Daniel Grace</p>
+      </div>
       <div className="main">
         <div className="search">
           <Form onSubmit={handleSubmit}>
