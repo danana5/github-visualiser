@@ -4,7 +4,6 @@ import {
   ScatterChart,
   Scatter,
   CartesianGrid,
-  Legend,
   BarChart,
   Bar,
   XAxis,
@@ -13,7 +12,7 @@ import {
   Tooltip,
   Treemap,
 } from "recharts";
-import { Form, Card, Image, Icon } from "semantic-ui-react";
+import { Form, Card, Image, Icon, Button } from "semantic-ui-react";
 
 function App() {
   const [fullName, setName] = useState("");
@@ -31,12 +30,18 @@ function App() {
   const [statURL, setStats] = useState("");
   const [userCommits, setUserCommits] = useState("");
   const [finalCommits, setFinalCommits] = useState("");
+  const [finalMonth, setFinalMonth] = useState("");
+  const [finalHour, setFinalHour] = useState("");
+  const [popMonth, setMonth] = useState("");
+  const [popHour, setHour] = useState("");
 
   let languages = new Map();
   let commits = new Map();
   let map = new Map();
   let commArr = [];
   let totalCommits = [];
+  let totalMonths = [];
+  let totalHours = [];
 
   useEffect(() => {
     fetch("https://api.github.com/users/example", { headers })
@@ -71,6 +76,18 @@ function App() {
   };
 
   const handleSubmit = () => {
+    setName("");
+    setFullRepos("");
+    setFollowers("");
+    setLanguages("");
+    setRepos("");
+    setMonth("");
+    setHour("");
+    setUserCommits("");
+    setFinalCommits("");
+    setPopLang("");
+    setBio("");
+
     fetch(`https://api.github.com/users/${userInput}`, {
       headers,
     })
@@ -87,7 +104,6 @@ function App() {
               getStats(userInput);
               getCommits(reposArr, data.name);
               getLanguages(reposArr);
-              mostUsedLanguage(langArray);
             });
           setError(null);
         }
@@ -172,10 +188,14 @@ function App() {
                   break;
               }
               totalCommits.push(month + " " + hour);
+              totalMonths.push(month);
+              totalHours.push(hour);
             }
           }
         });
     }
+    setFinalHour(totalHours);
+    setFinalMonth(totalMonths);
     setUserCommits(totalCommits);
     finCommits(userCommits);
   };
@@ -190,7 +210,6 @@ function App() {
         map.set(key, 1);
       }
     }
-    console.log(map);
     for (const [key, value] of map) {
       let splitted = key.split(" ");
       commArr.push({
@@ -239,6 +258,58 @@ function App() {
     }
     setPopLang(popLang);
   };
+  const mostActiveMonth = (arr) => {
+    let monthMap = new Map();
+    let resValue = 0;
+    let res = "";
+
+    for (let i = 0; i < arr.length; i++) {
+      if (monthMap.has(arr[i])) {
+        let temp = monthMap.get(arr[i]);
+        monthMap.set(arr[i], temp + 1);
+      } else {
+        monthMap.set(arr[i], 1);
+      }
+    }
+    for (const [key, value] of monthMap) {
+      if (value > resValue) {
+        resValue = value;
+        res = key;
+      }
+    }
+    setMonth(res);
+  };
+
+  const mostActiveHour = (arr) => {
+    let hourMap = new Map();
+    let resValue = 0;
+    let res = "";
+
+    for (let i = 0; i < arr.length; i++) {
+      if (hourMap.has(arr[i])) {
+        let temp = hourMap.get(arr[i]);
+        hourMap.set(arr[i], temp + 1);
+      } else {
+        hourMap.set(arr[i], 1);
+      }
+    }
+    for (const [key, value] of hourMap) {
+      if (value > resValue) {
+        resValue = value;
+        res = key;
+      }
+    }
+    setHour(res);
+  };
+
+  const handleAnalysis = () => {
+    if (popLang == "") {
+      mostUsedLanguage(langArray);
+      mostActiveMonth(finalMonth);
+      mostActiveHour(finalHour);
+      finCommits(userCommits);
+    }
+  };
 
   return (
     <div>
@@ -255,7 +326,7 @@ function App() {
                 name="name"
                 onChange={handleSearch}
               />
-              <Form.Button content="Go!" color="#e13d81" />
+              <Form.Button content="Go!" color="teal" />
             </Form.Group>
           </Form>
         </div>
@@ -289,51 +360,74 @@ function App() {
                     {repos} Repositories
                   </a>
                 </Card.Content>
-                <Card.Content extra>
-                  <a>
-                    <Icon name="sort alphabet up" />
-                    {popLang} Developer
-                  </a>
-                </Card.Content>
               </Card>
             </div>
             <div className="stats">
               <img src={statURL} />
             </div>
             <div className="charts">
-              <div className="barChart">
-                <BarChart width={800} height={250} data={fullRepos}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="commits" fill="#e13d81" />
-                </BarChart>
+              <div>
+                <div>
+                  <h1>Repositories (Max Commits 100)</h1>
+                </div>
+                <div className="barChart">
+                  <BarChart width={800} height={250} data={fullRepos}>
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="commits" fill="#e13d81" />
+                  </BarChart>
+                </div>
               </div>
-              <div className="treeChart">
-                <Treemap
-                  width={730}
-                  height={250}
-                  data={langArray}
-                  dataKey="size"
-                  ratio={4 / 3}
-                  stroke="#fff"
-                  fill="#e13d81"
+              <div>
+                <div>
+                  <h1>Languages</h1>
+                </div>
+                <div className="treeChart">
+                  <Treemap
+                    width={730}
+                    height={250}
+                    data={langArray}
+                    dataKey="size"
+                    ratio={4 / 3}
+                    stroke="#fff"
+                    fill="#e13d81"
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1>Analysis</h1>
+            </div>
+            <div className="calculate">
+              <div>
+                <Button
+                  onClick={handleAnalysis}
+                  content="Update"
+                  color="teal"
                 />
               </div>
             </div>
             <div className="charts2">
-              <ScatterChart
-                width={790}
-                height={400}
-                margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="Month" name="Month" />
-                <YAxis dataKey="Hour" name="Hour" unit=":00" />
-                <ZAxis dataKey="Amount" range={[64, 144]} name="Amount" />
-                <Tooltip cursor={{ strokeDasharray: "3 " }} />
-                <Scatter name="Commits" data={finalCommits} fill="#e13d81" />
-              </ScatterChart>
+              <div className="scatterChart">
+                <ScatterChart
+                  width={790}
+                  height={400}
+                  margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="Month" name="Month" />
+                  <YAxis dataKey="Hour" name="Hour" unit=":00" />
+                  <ZAxis dataKey="Amount" range={[64, 144]} name="Amount" />
+                  <Tooltip cursor={{ strokeDasharray: "3 " }} />
+                  <Scatter name="Commits" data={finalCommits} fill="#e13d81" />
+                </ScatterChart>
+              </div>
+              <div className="analytics">
+                <h3>Most Used Language: {popLang}</h3>
+                <h3>Most Active Month: {popMonth}</h3>
+                <h3>Most Active Hour of the Day: {popHour}</h3>
+              </div>
             </div>
           </div>
         )}
