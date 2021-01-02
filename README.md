@@ -37,7 +37,7 @@ If the user enters a username that can not be linked to a GitHub account the pro
 
 ### User Card and Basic Stats
 
-![User Card](images/UserStats.JPG)
+![User Card](images/UserCard.JPG)
 
 A card like this is displayed once the search for a user has finished and it displays the users; avatar, name, username, bio, amount of repositories and the amount of followers/following.
 
