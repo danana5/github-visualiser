@@ -61,4 +61,6 @@ The bar chart with the repos is interactive and upon mouse hover shows the data 
 
 The analytics calculated for Linus Torvalds GitHub account highlighting his most active hour on GitHub and his most active month.
 
+## Example
 
+![Standard User Interaction](images/user.gif)
