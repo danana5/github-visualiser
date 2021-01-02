@@ -55,3 +55,10 @@ This is the visualisation of the users commits to repositories on the bar graph 
 
 The bar chart with the repos is interactive and upon mouse hover shows the data being visualised.
 
+### Analytics
+
+![Analytics](images/analysis.gif)
+
+The analytics calculated for Linus Torvalds GitHub account highlighting his most active hour on GitHub and his most active month.
+
+
